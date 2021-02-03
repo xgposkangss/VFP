@@ -1,0 +1,41 @@
+LPARAMETERS nButton, nShift, nXCoord, nYCoord
+
+* 梅子论坛上的：list超过1页就不灵
+* IF nYcoord > THIS.TOP + 18 * THIS.LISTCOUNT
+* 	THIS.SELECTED(THIS.LISTCOUNT) = .T.
+* ELSE
+* 	THIS.SELECTED(INT((nYCoord - THIS.TOP) / 18) + 1) = .T.
+* ENDIF
+
+LOCAL m._字符像素
+m._字符像素 = FONTMETRIC(1,THIS.FONTNAME,THIS.FONTSIZE)		&& 1、象素单位高度；6、宽度		&& 测试每行记录间隔像素：4
+
+IF MOD(nYCoord, (m._字符像素 + 4)/4) <> 0					&& /2 鼠标点击2次，鼠标点击次数多，视觉就流畅。
+	THISFORM.鼠标点击 = .F.
+	RETURN
+ENDIF
+
+IF THISFORM.鼠标点击 = .F.
+	THISFORM.text1.VALUE = THISFORM.text1.VALUE + 1
+	MOUSE CLICK RIGHT
+	THISFORM.鼠标Y = nYCoord
+	THISFORM.鼠标点击 = .T.
+	MOUSE CLICK RIGHT										&& 防止移动过快没有点击到
+ENDIF
+
+RETURN
+
+IF THISFORM.鼠标点击 = .F.
+
+	THISFORM.text1.VALUE = THISFORM.text1.VALUE + 1
+
+	DECLARE INTEGER mouse_event IN WIN32API INTEGER dwFlags,INTEGER dx, INTEGER dy, INTEGER cButtons, INTEGER dwExtraInfo
+	* #DEFINE MOUSEEVENTF_LEFTDOWN		0x0002
+	* #DEFINE MOUSEEVENTF_LEFTUP		0x0004
+	* #DEFINE MOUSEEVENTF_RIGHTDOWN		0x0008
+	* #DEFINE MOUSEEVENTF_RIGHTUP		0x0010
+	THISFORM.鼠标Y = nYCoord
+	THISFORM.鼠标点击 = .T.
+	mouse_event(0x0008,0,0,0,0)
+	mouse_event(0x0010,0,0,0,0)
+ENDIF
