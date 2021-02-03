@@ -1,6 +1,5 @@
 LPARAMETERS nButton, nShift, nXCoord, nYCoord
 
-* 梅子论坛上的：list超过1页就不灵
 * IF nYcoord > THIS.TOP + 18 * THIS.LISTCOUNT
 * 	THIS.SELECTED(THIS.LISTCOUNT) = .T.
 * ELSE
